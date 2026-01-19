@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sultanbeyli"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              29.2157,
+              40.9328
+            ],
+            [
+              29.3067,
+              40.9328
+            ],
+            [
+              29.3067,
+              41.00279999999999
+            ],
+            [
+              29.2157,
+              41.00279999999999
+            ],
+            [
+              29.2157,
+              40.9328
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

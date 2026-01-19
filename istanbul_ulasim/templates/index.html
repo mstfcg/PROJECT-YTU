@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Akıllı Şehir Yolculuk Planlama - En Kısa Yol</title>
+    <!-- Offline CSS Assets -->
+    <link rel="stylesheet" href="/static/vendor/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/vendor/fontawesome/all.min.css">
+    <link rel="stylesheet" href="/static/css/custom.css">
+    <style>
+        :root { --bg:#f7f9fc; --surface:#ffffff; --accent:#3b82f6; --accent-2:#22c55e; --text:#111827; --muted:#6b7280; --danger:#b91c1c; }
+        * { box-sizing: border-box; }
+        body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background: var(--bg); color: var(--text); }
+        .nav { padding: 12px 20px; background: #ffffff; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 0; }
+        .nav a { color: #007cce; text-decoration: none; padding: 8px 12px; border-radius: 8px; position: relative; }
+        .nav a:hover { color: #005fa6; }
+        .nav a.active { background: #007cce; color: #ffffff; }
+        .nav a:not(:last-child)::after { content: ""; display: inline-block; width: 1px; height: 20px; background: #e5e7eb; margin: 0 12px; vertical-align: middle; }
+        .layout { display: grid; grid-template-columns: 420px 1fr; gap: 16px; padding: 16px; height: calc(100vh - 56px); }
+        .sidebar { background: var(--surface); border: 1px solid #e5e7eb; border-radius: 16px; padding: 20px; box-shadow: 0 8px 20px rgba(17,24,39,.06); overflow: auto; }
+        .map-wrap { position: relative; border-radius: 16px; border: 1px solid #e5e7eb; background: var(--surface); box-shadow: 0 12px 24px rgba(17,24,39,.06); }
+        .map-iframe { width: 100%; height: 100%; border: 0; display: block; }
+        .chip-bar { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+        .chip { background: #ffffff; border: 1px solid #e5e7eb; color: #374151; border-radius: 9999px; padding: 8px 12px; font-size: 14px; cursor: pointer; }
+        .chip:hover { background: #f3f4f6; }
+        h2 { margin: 0 0 12px; font-size: 22px; }
+        p { color: var(--muted); }
+        .status-ok { color: var(--accent-2); font-weight: 700; }
+        .status-bad { color: var(--danger); font-weight: 700; }
+        h3 { margin: 12px 0 4px; font-size: 14px; color: var(--text); }
+        /* PrimeNG-like Input & Select Style */
+        input[type="text"], select { 
+            width: 100%; 
+            padding: 0.75rem 0.75rem; 
+            margin: 8px 0 12px; 
+            border-radius: 6px; 
+            border: 1px solid #d1d5db; 
+            background: #ffffff; 
+            color: #495057; 
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.2s;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+            padding-right: 2.5rem;
+        }
+        input[type="text"]:hover, select:hover {
+            border-color: #3b82f6;
+        }
+        input[type="text"]:focus, select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px #bfdbfe;
+        }
+        input::placeholder { color: #9ca3af; }
+        .btn { appearance: none; border: 1px solid #e5e7eb; background: #f9fafb; color: #111827; font-weight: 600; padding: 10px 14px; border-radius: 12px; cursor: pointer; }
+        .btn:hover { background: #f3f4f6; }
+        .btn-primary { background: #007cce; border-color: #007cce; color: #ffffff; }
+        .btn-primary:hover { background: #005fa6; border-color: #005fa6; }
+        .btn.loading { background: #007cce; color: #ffffff; border-color: #007cce; display: inline-flex; align-items: center; }
+        .btn.loading::before { content: ""; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.6); border-top-color: #ffffff; border-radius: 50%; margin-right: 8px; animation: spin .6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .divider { border: 0; height: 1px; background: #e5e7eb; margin: 18px 0; }
+        ul { padding-left: 18px; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/" class="active">En Kısa Yol</a>
+        <a href="/service_area">Hizmet Alanı (Hastane)</a>
+        <a href="/multi_route">Çok Noktalı Rota</a>
+        <a href="/pois">POI Arama</a>
+        <a href="/navigation">Navigasyon</a>
+    </div>
+    <div class="layout">
+        <aside class="sidebar">
+            <h2>En Kısa Yol</h2>
+            <p>Başlangıç ve bitiş için semt/adres girin.</p>
+
+            <form method="POST">
+                <h3>Başlangıç Noktası</h3>
+                <input type="text" name="start_place" placeholder="Örn: Taksim Meydanı, Beyoğlu">
+
+                <h3>Bitiş Noktası</h3>
+                <input type="text" name="end_place" placeholder="Örn: Kadıköy Rıhtım, Kadıköy">
+
+
+                <button class="btn btn-primary" type="submit">En Kısa Yolu Hesapla</button>
+            </form>
+
+            {% if error_message %}
+                <div class="divider"></div>
+                <p class="status-bad"><b>{{ error_message }}</b></p>
+            {% endif %}
+
+            {% if total_distance_km or estimated_time_min %}
+                <div class="divider" id="results-start"></div>
+                <h3>Özet</h3>
+                {% if total_distance_km %}
+                    <p><b>Mesafe:</b> {{ total_distance_km }} km</p>
+                {% endif %}
+                {% if estimated_time_min %}
+                    <p><b>Tahmini Süre:</b> {{ estimated_time_min }} dk</p>
+                {% endif %}
+            {% endif %}
+        </aside>
+
+        <section class="map-wrap">
+            {% if route_url %}
+                <iframe class="map-iframe" src="{{ route_url }}"></iframe>
+            {% else %}
+                <div class="map-iframe" style="display:flex;align-items:center;justify-content:center;background:#f3f4f6;color:#6b7280;">Harita burada görüntülenecek</div>
+            {% endif %}
+        </section>
+    </div>
+    <script>
+        (function(){
+            var forms = document.querySelectorAll('form');
+            forms.forEach(function(f){
+                var sb = f.querySelector('button[type="submit"]');
+                if(!sb) return;
+                f.addEventListener('submit', function(){
+                    sb.classList.add('loading');
+                    sb.disabled = true;
+                    sb.dataset.originalText = sb.textContent;
+                    sb.textContent = 'Hesaplanıyor...';
+                });
+            });
+        })();
+
+        // Scroll to results if present
+        window.addEventListener('load', function() {
+            var results = document.getElementById('results-start');
+            if (results) {
+                setTimeout(function(){
+                    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        });
+    </script>
+    <script src="/static/js/custom.js"></script>
+</body>
+</html>

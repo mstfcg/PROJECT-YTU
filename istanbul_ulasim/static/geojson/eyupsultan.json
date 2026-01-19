@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Eyupsultan"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              28.92,
+              41.03
+            ],
+            [
+              28.95,
+              41.03
+            ],
+            [
+              28.95,
+              41.28
+            ],
+            [
+              28.85,
+              41.28
+            ],
+            [
+              28.92,
+              41.03
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Gaziosmanpasa"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              28.8648,
+              41.0223
+            ],
+            [
+              28.9558,
+              41.0223
+            ],
+            [
+              28.9558,
+              41.092299999999994
+            ],
+            [
+              28.8648,
+              41.092299999999994
+            ],
+            [
+              28.8648,
+              41.0223
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

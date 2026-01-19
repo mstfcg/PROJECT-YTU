@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Akıllı Şehir Yolculuk Planlama - Çok Noktalı Rota</title>
+    <!-- Offline CSS Assets -->
+    <link rel="stylesheet" href="/static/vendor/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/vendor/fontawesome/all.min.css">
+    <link rel="stylesheet" href="/static/css/custom.css">
+    <style>
+        :root { --bg:#f7f9fc; --surface:#ffffff; --accent:#a855f7; --accent-2:#22c55e; --text:#111827; --muted:#6b7280; --danger:#b91c1c; }
+        * { box-sizing: border-box; }
+        body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background: var(--bg); color: var(--text); }
+        .nav { padding: 12px 20px; background: #ffffff; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 0; }
+        .nav a { color: #007cce; text-decoration: none; padding: 8px 12px; border-radius: 8px; position: relative; }
+        .nav a:hover { color: #005fa6; }
+        .nav a.active { background: #007cce; color: #ffffff; }
+        .nav a:not(:last-child)::after { content: ""; display: inline-block; width: 1px; height: 20px; background: #e5e7eb; margin: 0 12px; vertical-align: middle; }
+        .layout { display: grid; grid-template-columns: 420px 1fr; gap: 16px; padding: 16px; height: calc(100vh - 56px); }
+        .sidebar { background: var(--surface); border: 1px solid #e5e7eb; border-radius: 16px; padding: 20px; box-shadow: 0 8px 20px rgba(17,24,39,.06); overflow: auto; }
+        .map-wrap { position: relative; border-radius: 16px; border: 1px solid #e5e7eb; background: var(--surface); box-shadow: 0 12px 24px rgba(17,24,39,.06); }
+        .map-iframe { width: 100%; height: 100%; border: 0; display: block; }
+        h2 { margin: 0 0 12px; font-size: 22px; }
+        p { color: var(--muted); }
+        form h3 { margin: 12px 0 4px; font-size: 14px; color: var(--text); }
+        form h4 { margin: 10px 0 6px; font-size: 13px; color: var(--muted); }
+        /* PrimeNG-like Input & Select Style */
+        input[type="text"], select { 
+            width: 100%; 
+            padding: 0.75rem 0.75rem; 
+            margin: 8px 0 12px; 
+            border-radius: 6px; 
+            border: 1px solid #d1d5db; 
+            background: #ffffff; 
+            color: #495057; 
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.2s;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+            padding-right: 2.5rem;
+        }
+        input[type="text"]:hover, select:hover {
+            border-color: #3b82f6;
+        }
+        input[type="text"]:focus, select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px #bfdbfe;
+        }
+        .btn { appearance: none; border: 1px solid #e5e7eb; background: #f9fafb; color: #111827; font-weight: 600; padding: 10px 14px; border-radius: 12px; cursor: pointer; }
+        .btn:hover { background: #f3f4f6; }
+        .btn-primary { background: #007cce; border-color: #007cce; color: #ffffff; }
+        .btn-primary:hover { background: #005fa6; border-color: #005fa6; }
+        .btn.loading { background: #007cce; color: #ffffff; border-color: #007cce; display: inline-flex; align-items: center; }
+        .btn.loading::before { content: ""; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.6); border-top-color: #ffffff; border-radius: 50%; margin-right: 8px; animation: spin .6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .stop-item { margin-bottom: 10px; }
+        .summary-box { background: #f1f5f9; border-radius: 12px; padding: 16px; margin-top: 20px; border: 1px solid #e2e8f0; }
+        .summary-box h3 { margin: 0 0 12px; font-size: 16px; color: #0f172a; }
+        .summary-box ol { margin: 0; padding-left: 24px; font-size: 16px; line-height: 1.5; }
+        .summary-box li { margin-bottom: 6px; }
+        .summary-stats { margin-top: 16px; padding-top: 16px; border-top: 1px solid #cbd5e1; display: flex; gap: 24px; font-size: 18px; color: #1e293b; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">En Kısa Yol</a>
+        <a href="/service_area">Hizmet Alanı (Hastane)</a>
+        <a href="/multi_route" class="active">Çok Noktalı Rota</a>
+        <a href="/pois">POI Arama</a>
+        <a href="/navigation">Navigasyon</a>
+    </div>
+    <div class="layout">
+        <aside class="sidebar">
+            <h2>Çok Noktalı Rota</h2>
+            <p>Başlangıç noktası ve 1–5 arası durak girin; optimum sırayı hesaplarız.</p>
+
+            <form method="POST">
+                <h3>Ulaşım Modu</h3>
+                <select name="mode">
+                    <option value="araba" selected>Araba (En Hızlı)</option>
+                    <option value="yaya">Yaya (En Kısa)</option>
+                </select>
+
+                <h3>Başlangıç Noktası</h3>
+                <input type="text" name="start_place" placeholder="Örn: Taksim Meydanı, Beyoğlu, İstanbul">
+                <div class="divider"></div>
+                <h3>Duraklar (max 5)</h3>
+                <div id="stops-container">
+                    <div class="stop-item">
+                        <h4>Durak 1</h4>
+                        <input type="text" name="stop1_place" placeholder="Örn: Bağdat Cd. 120, Kadıköy, İstanbul">
+                    </div>
+                </div>
+
+                <button id="add-stop" type="button" class="btn" style="margin-right:8px;">+ Durak Ekle</button>
+                <button class="btn btn-primary" type="submit">Optimum Rotayı Hesapla</button>
+            </form>
+
+            <script>
+        (function(){
+            var maxStops = 5;
+            var container = document.getElementById('stops-container');
+            var addBtn = document.getElementById('add-stop');
+            function currentCount(){ return container.querySelectorAll('.stop-item').length; }
+            addBtn.addEventListener('click', function(){
+                var count = currentCount();
+                if(count >= maxStops) return;
+                var next = count + 1;
+                var wrap = document.createElement('div');
+                wrap.className = 'stop-item';
+                var h = document.createElement('h4');
+                h.textContent = 'Durak ' + next;
+                var input = document.createElement('input');
+                input.type = 'text';
+                input.name = 'stop' + next + '_place';
+                input.placeholder = 'Örn: Bağdat Caddesi No: 120, Kadıköy, İstanbul';
+                wrap.appendChild(h);
+                wrap.appendChild(input);
+                container.appendChild(wrap);
+            });
+        })();
+            </script>
+            <script>
+        (function(){
+            var forms = document.querySelectorAll('form');
+            forms.forEach(function(f){
+                var sb = f.querySelector('button[type="submit"]');
+                if(!sb) return;
+                f.addEventListener('submit', function(){
+                    sb.classList.add('loading');
+                    sb.disabled = true;
+                    sb.dataset.originalText = sb.textContent;
+                    sb.textContent = 'Hesaplanıyor...';
+                });
+            });
+        })();
+            </script>
+            <script>
+            // Scroll to results if present
+            window.addEventListener('load', function() {
+                var results = document.getElementById('results-start');
+                if (results) {
+                    setTimeout(function(){
+                        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                }
+            });
+            </script>
+
+            {% if error_message %}
+                <div class="divider"></div>
+                <p class="status-bad"><b>{{ error_message }}</b></p>
+            {% endif %}
+
+            {% if best_order_info %}
+                <div class="summary-box" id="results-start">
+                    <h3>Önerilen Sıra</h3>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li><b>Başlangıç:</b> {{ start_label if start_label else 'Depo / Merkez' }}</li>
+                        {% for info in best_order_info %}
+                            <li><b>{{ info.step }}. Durak:</b> {{ info.label }}</li>
+                        {% endfor %}
+                    </ul>
+                    <div class="summary-stats">
+                        {% if total_distance_km %}
+                            <span><b>Mesafe:</b> {{ total_distance_km }} km</span>
+                        {% endif %}
+                        {% if estimated_time_min %}
+                            <span><b>Tahmini Süre:</b> ~{{ estimated_time_min }} dk</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </aside>
+
+        <section class="map-wrap">
+            {% if multi_route_url %}
+                <iframe class="map-iframe" src="{{ multi_route_url }}"></iframe>
+            {% else %}
+                <div class="map-iframe" style="display:flex;align-items:center;justify-content:center;background:#f3f4f6;color:#6b7280;">Harita burada görüntülenecek</div>
+            {% endif %}
+        </section>
+    </div>
+    <script src="/static/js/custom.js"></script>
+</body>
+</html>

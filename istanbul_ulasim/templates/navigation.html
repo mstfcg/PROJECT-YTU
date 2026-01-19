@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Navigasyon (Araba/Yaya) - Rota ve Süre</title>
+    <!-- Offline CSS Assets -->
+    <link rel="stylesheet" href="/static/vendor/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/vendor/fontawesome/all.min.css">
+    <link rel="stylesheet" href="/static/css/custom.css">
+    <style>
+        :root { --bg:#f7f9fc; --surface:#ffffff; --accent:#0ea5e9; --accent-2:#22c55e; --text:#111827; --muted:#6b7280; --danger:#b91c1c; }
+        * { box-sizing: border-box; }
+        body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background: var(--bg); color: var(--text); }
+        .nav { padding: 12px 20px; background: #ffffff; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 0; }
+        .nav a { color: #007cce; text-decoration: none; padding: 8px 12px; border-radius: 8px; position: relative; }
+        .nav a:hover { color: #005fa6; }
+        .nav a.active { background: #007cce; color: #ffffff; }
+        .nav a:not(:last-child)::after { content: ""; display: inline-block; width: 1px; height: 20px; background: #e5e7eb; margin: 0 12px; vertical-align: middle; }
+        .layout { display: grid; grid-template-columns: 420px 1fr; gap: 16px; padding: 16px; height: calc(100vh - 56px); }
+        .sidebar { background: var(--surface); border: 1px solid #e5e7eb; border-radius: 16px; padding: 20px; box-shadow: 0 8px 20px rgba(17,24,39,.06); display:flex; flex-direction:column; overflow: hidden; }
+        .map-wrap { position: relative; border-radius: 16px; border: 1px solid #e5e7eb; background: var(--surface); box-shadow: 0 12px 24px rgba(17,24,39,.06); }
+        .map-iframe { width: 100%; height: 100%; border: 0; display: block; }
+        h2 { margin: 0 0 12px; font-size: 22px; }
+        p { color: var(--muted); }
+        form h3 { margin: 6px 0 2px; font-size: 14px; }
+        /* PrimeNG-like Input & Select Style */
+        input[type="text"], select { 
+            width: 100%; 
+            padding: 0.75rem 0.75rem; 
+            margin: 8px 0 12px; 
+            border-radius: 6px; 
+            border: 1px solid #d1d5db; 
+            background: #ffffff; 
+            color: #495057; 
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.2s;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+            padding-right: 2.5rem;
+        }
+        input[type="text"]:hover, select:hover {
+            border-color: #3b82f6;
+        }
+        input[type="text"]:focus, select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px #bfdbfe;
+        }
+        .btn { appearance: none; border: 1px solid #e5e7eb; background: #f9fafb; color: #111827; font-weight: 600; padding: 10px 14px; border-radius: 12px; cursor: pointer; }
+        .btn:hover { background: #f3f4f6; }
+        .btn-primary { background: #007cce; border-color: #007cce; color: #ffffff; }
+        .btn-primary:hover { background: #005fa6; border-color: #005fa6; }
+        .btn-orange { background: #f59e0b; border-color: #f59e0b; color: #ffffff; }
+        .btn-orange:hover { background: #d97706; border-color: #d97706; }
+        .btn-red { background: #ef4444; border-color: #ef4444; color: #ffffff; }
+        .btn-red:hover { background: #dc2626; border-color: #dc2626; }
+        .btn.loading { background: #007cce; color: #ffffff; border-color: #007cce; display: inline-flex; align-items: center; }
+        .btn.loading::before { content: ""; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.6); border-top-color: #ffffff; border-radius: 50%; margin-right: 8px; animation: spin .6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        ul { padding-left: 18px; }
+        .divider { border: 0; height: 1px; background: #e5e7eb; margin: 18px 0; }
+        .actions { display: flex; flex-direction: column; gap: 8px; align-items: stretch; margin-top: 8px; }
+        .actions .btn { width: 100%; justify-content: center; }
+        .actions-row { display: flex; gap: 8px; align-items: center; }
+        .actions-row .btn { flex: 1 1 0; width: auto; }
+        .nav-form { display:flex; flex-direction:column; flex: 1 1 auto; min-height: 0; }
+        .form-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; padding-right: 4px; padding-bottom: 100px; }
+        .actions-sticky { flex: 0 0 auto; margin-top: -80px; padding-top: 10px; border-top: 1px solid #e5e7eb; background: var(--surface); position: sticky; bottom: 0; z-index: 100; }
+        .actions { margin-top: 0; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; }
+        .field { display: flex; flex-direction: column; }
+        .pick-row { display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: center; }
+        .status { color:#6b7280; margin-top:6px; }
+        .extra { margin-top: 10px; }
+        .summary-card { margin-top: 12px; border: 1px solid #e5e7eb; background: #f9fafb; border-radius: 14px; padding: 10px 12px; }
+        .summary-title { margin: 0 0 8px; font-size: 14px; color: var(--text); }
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .summary-item { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 8px 10px; }
+        .summary-k { margin: 0; font-size: 12px; color: var(--muted); }
+        .summary-v { margin: 2px 0 0; font-size: 14px; font-weight: 700; color: var(--text); }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">En Kısa Yol</a>
+        <a href="/service_area">Hizmet Alanı (Hastane)</a>
+        <a href="/multi_route">Çok Noktalı Rota</a>
+        <a href="/pois">POI Arama</a>
+        <a href="/navigation" class="active">Navigasyon</a>
+    </div>
+    <div class="layout">
+        <aside class="sidebar">
+            <h2>Navigasyon (Araba/Yaya)</h2>
+            <p>Başlangıç ve bitiş noktasını girin, mod seçin, rota ve süre görün.</p>
+
+            <form method="POST" class="nav-form">
+                <div class="form-scroll">
+                    <div class="form-grid">
+                        <div class="field">
+                            <h3>Başlangıç Noktası</h3>
+                            <input type="text" name="start_place" placeholder="Örn: Taksim Meydanı, Beyoğlu" required>
+                            <input type="hidden" name="start_lat">
+                            <input type="hidden" name="start_lon">
+                            <input type="hidden" name="start_node_id">
+                        </div>
+                        <div class="field">
+                            <h3>Bitiş Noktası</h3>
+                            <input type="text" name="end_place" placeholder="Örn: Kadıköy Rıhtım, Kadıköy" required>
+                            <input type="hidden" name="end_lat">
+                            <input type="hidden" name="end_lon">
+                            <input type="hidden" name="end_node_id">
+                        </div>
+                    </div>
+
+                    <h3>Ara Nokta (opsiyonel)</h3>
+                    <input type="text" name="via_place" placeholder="Örn: Beşiktaş İskele">
+                    <input type="hidden" name="via_lat">
+                    <input type="hidden" name="via_lon">
+                    <input type="hidden" name="via_node_id">
+
+                    <div class="form-grid">
+                        <div class="field">
+                            <h3>Ulaşım Modu</h3>
+                            <select name="mode">
+                                <option value="araba" {% if mode == 'araba' or not mode %}selected{% endif %}>Araba</option>
+                                <option value="yaya" {% if mode == 'yaya' %}selected{% endif %}>Yaya</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <h3>Hız Profili</h3>
+                            <select name="speed_profile">
+                                <option value="normal" selected>Normal</option>
+                                <option value="trafik">Yoğun Trafik</option>
+                                <option value="gece">Gece</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h3>Haritadan Seçim</h3>
+                    <p class="status">Haritaya tıklayın, seçili alan otomatik dolacak.</p>
+                    <div class="pick-row">
+                        <label>Seçim Modu:</label>
+                        <select id="selMode">
+                            <option value="start">Başlangıç</option>
+                            <option value="via">Ara Nokta</option>
+                            <option value="end">Bitiş</option>
+                        </select>
+                    </div>
+                    <p id="pickStatus" class="status">Haritadan seçim: yok</p>
+
+                    {% if error_message %}
+                        <div class="divider"></div>
+                        <p class="status-bad"><b>{{ error_message }}</b></p>
+                    {% endif %}
+
+                    {% if total_distance_km or estimated_time_min %}
+                        <div class="summary-card" id="route-results">
+                            <h3 class="summary-title">Özet</h3>
+                            <div class="summary-grid">
+                                {% if mode %}
+                                    <div class="summary-item">
+                                        <p class="summary-k">Mod</p>
+                                        <p class="summary-v">{{ mode|capitalize }}</p>
+                                    </div>
+                                {% endif %}
+                                {% if total_distance_km %}
+                                    <div class="summary-item">
+                                        <p class="summary-k">Mesafe</p>
+                                        <p class="summary-v">{{ total_distance_km }} km</p>
+                                    </div>
+                                {% endif %}
+                                {% if estimated_time_min %}
+                                    <div class="summary-item">
+                                        <p class="summary-k">Tahmini Süre</p>
+                                        <p class="summary-v">{{ estimated_time_min }} dk</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if steps and steps|length > 0 %}
+                        <div class="divider"></div>
+                        <h3>Yönlendirme Adımları</h3>
+                        <ul>
+                            {% for s in steps %}
+                                <li>{{ s.instruction|capitalize }} — Yaklaşık {{ s.distance_m }} m</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div class="actions-sticky">
+                    <div class="actions">
+                        <button class="btn btn-primary" type="submit">Navigasyon Rota Oluştur</button>
+                        <div class="actions-row">
+                            <button class="btn btn-orange" type="button" id="swapBtn">Başlangıç ↔ Bitiş</button>
+                            <button class="btn btn-red" type="reset">Temizle</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </aside>
+
+        <section class="map-wrap">
+            {% if navigation_map_url %}
+                <iframe class="map-iframe" src="{{ navigation_map_url }}"></iframe>
+            {% else %}
+                <div class="map-iframe" style="display:flex;align-items:center;justify-content:center;background:#f3f4f6;color:#6b7280;">Harita burada görüntülenecek</div>
+            {% endif %}
+        </section>
+    </div>
+    <script>
+        const swapBtn = document.getElementById('swapBtn');
+        if (swapBtn) {
+            swapBtn.addEventListener('click', function() {
+                const s = document.querySelector('input[name="start_place"]');
+                const e = document.querySelector('input[name="end_place"]');
+                if (s && e) {
+                    const tmp = s.value;
+                    s.value = e.value;
+                    e.value = tmp;
+                }
+            });
+        }
+        const modeSel = document.getElementById('selMode');
+        const pickStatus = document.getElementById('pickStatus');
+        const iframeEl = document.querySelector('.map-iframe');
+        const routeModeSel = document.querySelector('select[name="mode"]');
+        function setHiddenValue(name, value) {
+            const el = document.querySelector(`input[name="${name}"]`);
+            if (el) el.value = value;
+        }
+        function getTargetFields(target) {
+            if (target === 'end') {
+                return { place: 'end_place', lat: 'end_lat', lon: 'end_lon', node: 'end_node_id' };
+            }
+            if (target === 'via') {
+                return { place: 'via_place', lat: 'via_lat', lon: 'via_lon', node: 'via_node_id' };
+            }
+            return { place: 'start_place', lat: 'start_lat', lon: 'start_lon', node: 'start_node_id' };
+        }
+        function updateTargetFields(target, lat, lon, nodeId) {
+            const fields = getTargetFields(target);
+            setHiddenValue(fields.lat, lat);
+            setHiddenValue(fields.lon, lon);
+            setHiddenValue(fields.node, nodeId || '');
+            return fields;
+        }
+        function clearNodeIds() {
+            setHiddenValue('start_node_id', '');
+            setHiddenValue('end_node_id', '');
+            setHiddenValue('via_node_id', '');
+        }
+        if (iframeEl && iframeEl.tagName === 'IFRAME') {
+            const base = (iframeEl.getAttribute('src') || '').split('?')[0];
+            if (base) iframeEl.setAttribute('src', `${base}?v=${Date.now()}`);
+        }
+        if (modeSel && iframeEl) {
+            modeSel.addEventListener('change', function() {
+                iframeEl.contentWindow.postMessage({ type: 'navSelMode', value: modeSel.value }, '*');
+            });
+        }
+        if (routeModeSel) {
+            routeModeSel.addEventListener('change', function() {
+                clearNodeIds();
+            });
+        }
+        window.addEventListener('message', function(e) {
+            const d = e.data || {};
+            if (d.type === 'navCoords') {
+                const lat = d.lat, lon = d.lon, target = d.target || 'start';
+                const fields = updateTargetFields(target, lat, lon, '');
+                const modeVal = routeModeSel ? routeModeSel.value : 'araba';
+                const url = `/reverse_geocode?lat=${lat}&lon=${lon}&mode=${encodeURIComponent(modeVal)}`;
+                if (pickStatus) {
+                    pickStatus.textContent = `Haritadan secim: ${target} - (${lat.toFixed(5)}, ${lon.toFixed(5)})`;
+                }
+                fetch(url).then(r => r.json()).then(j => {
+                    const snapLat = (j && j.snapped_lat !== undefined && j.snapped_lat !== null) ? Number(j.snapped_lat) : lat;
+                    const snapLon = (j && j.snapped_lon !== undefined && j.snapped_lon !== null) ? Number(j.snapped_lon) : lon;
+                    const nodeId = (j && j.node_id !== undefined && j.node_id !== null) ? j.node_id : '';
+                    updateTargetFields(target, snapLat, snapLon, nodeId);
+                    if (j && j.address) {
+                        const inp = document.querySelector(`input[name="${fields.place}"]`);
+                        if (inp) inp.value = j.address;
+                    }
+                    if (pickStatus) {
+                        pickStatus.textContent = `Haritadan secim: ${target} - (${snapLat.toFixed(5)}, ${snapLon.toFixed(5)})`;
+                    }
+                }).catch(() => {});
+            }
+        });
+
+        // Scroll to results if present
+        window.addEventListener('load', function() {
+            var results = document.getElementById('route-results');
+            if (results) {
+                // Wait a bit for layout to settle
+                setTimeout(function(){
+                    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        });
+    </script>
+    <script>
+        (function(){
+            var forms = document.querySelectorAll('form');
+            forms.forEach(function(f){
+                var sb = f.querySelector('button[type="submit"]');
+                if(!sb) return;
+                f.addEventListener('submit', function(){
+                    sb.classList.add('loading');
+                    sb.disabled = true;
+                    sb.dataset.originalText = sb.textContent;
+                    sb.textContent = 'Hesaplanıyor...';
+                });
+            });
+        })();
+    </script>
+    <script src="/static/js/custom.js"></script>
+</body>
+</html>

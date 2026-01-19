@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kartal"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              29.15,
+              40.9
+            ],
+            [
+              29.23,
+              40.88
+            ],
+            [
+              29.24,
+              40.94
+            ],
+            [
+              29.16,
+              40.96
+            ],
+            [
+              29.15,
+              40.9
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

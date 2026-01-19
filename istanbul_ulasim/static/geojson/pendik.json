@@ -1,0 +1,42 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pendik"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              29.23,
+              40.87
+            ],
+            [
+              29.3,
+              40.83
+            ],
+            [
+              29.38,
+              40.95
+            ],
+            [
+              29.32,
+              41.0
+            ],
+            [
+              29.24,
+              40.94
+            ],
+            [
+              29.23,
+              40.87
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

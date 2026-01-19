@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sultangazi"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              28.8206,
+              41.0743
+            ],
+            [
+              28.9116,
+              41.0743
+            ],
+            [
+              28.9116,
+              41.144299999999994
+            ],
+            [
+              28.8206,
+              41.144299999999994
+            ],
+            [
+              28.8206,
+              41.0743
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

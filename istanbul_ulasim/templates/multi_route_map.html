@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="/static/vendor/leaflet/leaflet.js"></script>
+    <script src="/static/vendor/jquery/jquery-3.7.1.min.js"></script>
+    <script src="/static/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="/static/vendor/awesome-markers/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="/static/vendor/leaflet/leaflet.css"/>
+    <link rel="stylesheet" href="/static/vendor/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/static/vendor/bootstrap/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="/static/vendor/fontawesome/all.min.css"/>
+    <link rel="stylesheet" href="/static/vendor/awesome-markers/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="/static/vendor/awesome-markers/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_5f432b84098571a4ddc25963ba81b199 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; background-color: #f2efe9; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_5f432b84098571a4ddc25963ba81b199" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_5f432b84098571a4ddc25963ba81b199 = L.map(
+                "map_5f432b84098571a4ddc25963ba81b199",
+                {
+                    center: [41.015137, 28.97953],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "maxBounds": [
+[
+40.71395582628603,
+27.7734375,
+],
+[
+41.50857729743934,
+30.234375,
+],
+],
+  "zoom": 12,
+  "zoomControl": true,
+  "preferCanvas": false,
+  "maxBoundsViscosity": 1.0,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_80598be93eccc295e45e101bf6ab7294 = L.tileLayer(
+                "/static/tiles/{z}/{x}/{y}.png",
+                {
+  "minZoom": 10,
+  "maxZoom": 18,
+  "maxNativeZoom": 16,
+  "noWrap": true,
+  "attribution": "Offline Map (YTU Project)",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_80598be93eccc295e45e101bf6ab7294.addTo(map_5f432b84098571a4ddc25963ba81b199);
+        
+</script>
+</html>

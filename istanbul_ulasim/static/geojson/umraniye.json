@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Umraniye"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              29.0508,
+              40.9906
+            ],
+            [
+              29.1418,
+              40.9906
+            ],
+            [
+              29.1418,
+              41.060599999999994
+            ],
+            [
+              29.0508,
+              41.060599999999994
+            ],
+            [
+              29.0508,
+              40.9906
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

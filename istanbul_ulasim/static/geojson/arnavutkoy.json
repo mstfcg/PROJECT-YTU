@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Arnavutkoy"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              28.6,
+              41.05
+            ],
+            [
+              28.9,
+              41.1
+            ],
+            [
+              28.85,
+              41.3
+            ],
+            [
+              28.55,
+              41.32
+            ],
+            [
+              28.6,
+              41.05
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

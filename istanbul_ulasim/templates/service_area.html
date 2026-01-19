@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Hizmet Alanı Analizi - Hastane Çevresi</title>
+    <!-- Offline CSS Assets -->
+    <link rel="stylesheet" href="/static/vendor/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/vendor/fontawesome/all.min.css">
+    <link rel="stylesheet" href="/static/css/custom.css">
+    <style>
+        :root { --bg:#f7f9fc; --surface:#ffffff; --accent:#06b6d4; --accent-2:#22c55e; --text:#111827; --muted:#6b7280; --danger:#b91c1c; }
+        * { box-sizing: border-box; }
+        body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", sans-serif; background: var(--bg); color: var(--text); }
+        .nav { padding: 12px 20px; background: #ffffff; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 0; }
+        .nav a { color: #007cce; text-decoration: none; padding: 8px 12px; border-radius: 8px; position: relative; }
+        .nav a:hover { color: #005fa6; }
+        .nav a.active { background: #007cce; color: #ffffff; }
+        .nav a:not(:last-child)::after { content: ""; display: inline-block; width: 1px; height: 20px; background: #e5e7eb; margin: 0 12px; vertical-align: middle; }
+        .layout { display: grid; grid-template-columns: 420px 1fr; gap: 16px; padding: 16px; height: calc(100vh - 56px); }
+        .sidebar { background: var(--surface); border: 1px solid #e5e7eb; border-radius: 16px; padding: 20px; box-shadow: 0 8px 20px rgba(17,24,39,.06); overflow: auto; }
+        .map-wrap { position: relative; border-radius: 16px; border: 1px solid #e5e7eb; background: var(--surface); box-shadow: 0 12px 24px rgba(17,24,39,.06); }
+        .map-iframe { width: 100%; height: 100%; border: 0; display: block; }
+        h2 { margin: 0 0 12px; font-size: 22px; }
+        p { color: var(--muted); }
+        form p { margin: 8px 0 6px; }
+        /* PrimeNG-like Input & Select Style */
+        input[type="text"], select { 
+            width: 100%; 
+            padding: 0.75rem 0.75rem; 
+            margin: 8px 0 12px; 
+            border-radius: 6px; 
+            border: 1px solid #d1d5db; 
+            background: #ffffff; 
+            color: #495057; 
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.2s;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+            padding-right: 2.5rem;
+        }
+        input[type="text"]:hover, select:hover {
+            border-color: #3b82f6;
+        }
+        input[type="text"]:focus, select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px #bfdbfe;
+        }
+        .btn { appearance: none; border: 1px solid #e5e7eb; background: #f9fafb; color: #111827; font-weight: 600; padding: 10px 14px; border-radius: 12px; cursor: pointer; }
+        .btn:hover { background: #f3f4f6; }
+        .btn-primary { background: #007cce; border-color: #007cce; color: #ffffff; }
+        .btn-primary:hover { background: #005fa6; border-color: #005fa6; }
+        .btn.loading { background: #007cce; color: #ffffff; border-color: #007cce; display: inline-flex; align-items: center; }
+        .btn.loading::before { content: ""; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.6); border-top-color: #ffffff; border-radius: 50%; margin-right: 8px; animation: spin .6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        table { width: 100%; border-collapse: collapse; border: 1px solid #e5e7eb; }
+        th, td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
+        th { background: #f9fafb; text-align: left; }
+        ul { padding-left: 18px; }
+        .divider { border: 0; height: 1px; background: #e5e7eb; margin: 18px 0; }
+        .multi-select { position: relative; width: 100%; max-width: 640px; }
+        .multi-select summary { padding: 10px 12px; border-radius: 12px; border: 1px solid #e5e7eb; background: #ffffff; color: var(--text); cursor: pointer; }
+        .multi-select[open] summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+        .multi-select .options { position: static; background: #ffffff; border: 1px solid #e5e7eb; border-top: 0; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; max-height: 240px; overflow: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 10px 12px; margin-bottom: 8px; }
+        .multi-select label { display: flex; align-items: center; gap: 8px; color: #374151; font-size: 14px; }
+        .poi-list { list-style: none; padding: 0; margin: 0; }
+        .poi-list li { padding: 8px 10px; border-bottom: 1px solid #e5e7eb; cursor: pointer; border-radius: 8px; }
+        .poi-list li:hover { background: #f3f4f6; }
+        .poi-list li b { color: #007cce; }
+        .poi-list li small { color: #6b7280; }
+        .poi-group {
+            background: #f3f4f6;
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 8px 12px;
+            margin-top: 10px;
+        }
+        .poi-group .count {
+            font-weight: normal;
+            color: #6b7280;
+            margin-left: 6px;
+        }
+        
+        /* Tablar için Stil */
+        .tabs { display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; }
+        .tab { padding: 8px 12px; cursor: pointer; border-radius: 8px; font-weight: 500; color: var(--muted); }
+        .tab.active { background: #e0f2fe; color: #007cce; }
+        .tab:hover { background: #f3f4f6; }
+        
+        .mode-section { display: none; }
+        .mode-section.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">En Kısa Yol</a>
+        <a href="/service_area" class="active">Hizmet Alanı (Hastane)</a>
+        <a href="/multi_route">Çok Noktalı Rota</a>
+        <a href="/pois">POI Arama</a>
+        <a href="/navigation">Navigasyon</a>
+    </div>
+    <div class="layout">
+        <aside class="sidebar">
+            <h2>Hizmet Alanı (Hastane)</h2>
+            <p>Arama yöntemini seçiniz:</p>
+            
+            <div class="tabs">
+                <div class="tab {% if mode == 'radius' %}active{% endif %}" onclick="switchTab('radius')">Yarıçap İle Ara</div>
+                <div class="tab {% if mode == 'drawing' %}active{% endif %}" onclick="switchTab('drawing')">Çizim İle Ara</div>
+            </div>
+
+            <form method="POST" id="mainForm">
+                <input type="hidden" name="mode" id="modeInput" value="{{ mode }}">
+                <input type="hidden" name="drawing_data" id="drawingDataInput" value="">
+                
+                <!-- Yarıçap Modu -->
+                <div id="radius-section" class="mode-section {% if mode == 'radius' %}active{% endif %}">
+                    <p>Hastane ve yarıçap seçin.</p>
+                    <p><b>Hastane:</b></p>
+                    <select name="hospital_id">
+                        <option value="">-- Lütfen bir hastane seçin --</option>
+                        {% for h in hospitals %}
+                            <option value="{{ h.id }}">{{ h.district }} - {{ h.name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <p><b>Yarıçap (km):</b></p>
+                    <select name="distance_km">
+                        <option value="1">1 km</option>
+                        <option value="2">2 km</option>
+                        <option value="5" selected>5 km</option>
+                        <option value="10">10 km</option>
+                    </select>
+                </div>
+                
+                <!-- Çizim Modu -->
+                <div id="drawing-section" class="mode-section {% if mode == 'drawing' %}active{% endif %}">
+                    <p><b>Haritadan Alan Seçin:</b></p>
+                    <p style="font-size:14px; color:#333;">
+                        1. Sağdaki haritada bulunan <b>çizim araçlarını</b> (kare, çokgen vb.) kullanın.<br>
+                        2. İstediğiniz bölgeyi çizin.<br>
+                        3. Çizim bitince aşağıdaki "Sorgula" butonuna basın.
+                    </p>
+                    <div id="drawing-status" style="padding:8px; background:#fffbe6; border:1px solid #ffe58f; border-radius:8px; font-size:13px; color:#d48806; display:none;">
+                        <i class="fas fa-check-circle"></i> Çizim alındı, sorgulayabilirsiniz.
+                    </div>
+                </div>
+
+                <p><b>Filtrelenecek Kategoriler (opsiyonel):</b></p>
+                <div class="options" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
+                    {% set categories = [
+                        ('hastane', 'Hastane'),
+                        ('okul', 'Okul'),
+                        ('universite', 'Üniversite'),
+                        ('metro', 'Metro'),
+                        ('marmaray', 'Marmaray'),
+                        ('metrobus', 'Metrobüs'),
+                        ('vapur', 'Vapur İskelesi'),
+                        ('otobus', 'Otobüs Durağı'),
+                        ('market', 'Market'),
+                        ('park', 'Park'),
+                        ('plaj', 'Plaj'),
+                        ('avm', 'AVM'),
+                        ('eczane', 'Eczane'),
+                        ('otel', 'Otel')
+                    ] %}
+                    {% for key, label in categories %}
+                        {% if mode != 'radius' or key != 'plaj' %} {# Plaj sadece drawing modunda veya hepsinde gösterilebilir, orijinal kodda drawing kontrolü vardı #}
+                             {% set style = cat_styles.get(key, {'color': 'gray', 'icon': 'circle', 'prefix': 'fa', 'css': 'gray'}) %}
+                            <label style="display:flex; align-items:center; cursor:pointer;">
+                                <input type="checkbox" name="category_filter" value="{{ key }}" {% if key in selected_categories %}checked{% endif %} style="width:auto; margin:0 6px 0 0;">
+                                <span style="display:inline-flex; justify-content:center; align-items:center; width:24px; margin-right:4px; color:{{ style.css }};">
+                                    <i class="{{ style.prefix }} fa-{{ style.icon }}"></i>
+                                </span>
+                                {{ label }}
+                            </label>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <br>
+                <button class="btn btn-primary" type="submit">Hizmet Alanını Hesapla</button>
+            </form>
+
+            {% if error_message %}
+                <div class="divider"></div>
+                <p class="status-bad"><b>{{ error_message }}</b></p>
+            {% endif %}
+
+            {% if stats %}
+                <div class="divider" id="stats-start"></div>
+                <h2>İstatistikler</h2>
+                <div>
+                    <table>
+                        <tr><th>Kategori</th><th>Adet</th></tr>
+                        {% for s in stats %}
+                            {% set style = cat_styles.get(s.category, {"color": "gray", "icon": "info", "css": "gray"}) %}
+                            <tr onclick="scrollToCategory('{{ s.key }}')" style="cursor:pointer;">
+                                <td>
+                                    <span style="display:inline-block; width:24px; text-align:center; margin-right:6px; color: {{ style.css }};">
+                                        <i class="fa fa-{{ style.icon }}"></i>
+                                    </span>
+                                    {{ s.category.title() }}
+                                </td>
+                                <td>{{ s.count }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            {% endif %}
+
+            {% if poi_results %}
+                <div class="divider" id="results-start"></div>
+                <h2>Noktalar</h2>
+                <p>İlk 1000 kayıt listelenmiştir. Haritada görmek için tıklayın.</p>
+                <ul class="poi-list">
+                    {% for r in poi_results %}
+                        {% if r.is_group %}
+                            <li class="poi-group" id="cat-{{ r.key }}">
+                                {{ r.category|capitalize }}
+                                <span class="count">({{ r.count }})</span>
+                            </li>
+                        {% else %}
+                            {% set style = cat_styles.get(r.category, {'color': 'gray', 'icon': 'info', 'prefix': 'fa'}) %}
+                            <li onclick="focusOnMap({{ r.lat }}, {{ r.lon }})">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background-color: {{ style.color }}; color: white; margin-right: 12px; font-size: 14px; flex-shrink: 0;">
+                                        <i class="{{ style.prefix }} fa-{{ style.icon }}"></i>
+                                    </div>
+                                    {% if r.category == 'otel' %}
+                                    <div style="color: {{ style.css }}; margin-right: 8px; font-size: 16px;">
+                                        <i class="fa fa-bed"></i>
+                                    </div>
+                                    {% endif %}
+                                    <div>
+                                        <div style="font-weight: 600; color: #111827;">{{ r.name }}</div>
+                                        <div style="font-size: 13px; color: #6b7280;">
+                                            {{ r.category|capitalize }} • {{ r.district }}
+                                            {% if r.distance_str %}
+                                                • <span style="color: #007cce; font-weight: 600;">{{ r.distance_str }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </aside>
+
+        <section class="map-wrap">
+            {% if service_area_map_url %}
+                <iframe class="map-iframe" src="{{ service_area_map_url }}"></iframe>
+            {% else %}
+                <div class="map-iframe" style="display:flex;align-items:center;justify-content:center;background:#f3f4f6;color:#6b7280;">Harita burada görüntülenecek</div>
+            {% endif %}
+        </section>
+    </div>
+    <script>
+        function switchTab(mode) {
+            // Check if current mode is already the target mode
+            var currentMode = document.getElementById('modeInput').value;
+            if (currentMode === mode) {
+                return; // Do nothing if already on the same tab
+            }
+            
+            // Reload page with new mode to reset results
+            window.location.href = "/service_area?mode=" + mode;
+        }
+
+        // Initialize map state on load
+        window.addEventListener('load', function() {
+            var currentMode = document.getElementById('modeInput').value || 'radius';
+            var iframe = document.querySelector('.map-iframe');
+            if (iframe) {
+                // If iframe is already loaded or loads later
+                iframe.addEventListener('load', function() {
+                    iframe.contentWindow.postMessage({ type: 'toggleDraw', mode: currentMode }, '*');
+                });
+                // Try sending immediately in case it's already there (e.g. from cache)
+                if (iframe.contentWindow) {
+                     setTimeout(function(){
+                        iframe.contentWindow.postMessage({ type: 'toggleDraw', mode: currentMode }, '*');
+                     }, 500); // Little delay to ensure map init
+                }
+            }
+        });
+
+        // Listen for drawing events from iframe
+        window.addEventListener('message', function(e) {
+            var data = e.data || {};
+            if (data.type === 'drawCreated') {
+                var geojsonStr = data.geojson;
+                document.getElementById('drawingDataInput').value = geojsonStr;
+                var statusDiv = document.getElementById('drawing-status');
+                if(statusDiv) {
+                    statusDiv.style.display = 'block';
+                    statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Çizim alındı, sorgulayabilirsiniz.';
+                }
+            }
+        });
+
+        function focusOnMap(lat, lon) {
+            var iframe = document.querySelector('.map-iframe');
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({
+                    type: 'focus_point', 
+                    lat: lat, 
+                    lon: lon
+                }, '*');
+            }
+        }
+        function scrollToTarget(target) {
+            if (!target) return;
+            var sidebar = target.closest('.sidebar');
+            if (sidebar) {
+                setTimeout(function(){
+                    var r = target.getBoundingClientRect();
+                    var s = sidebar.getBoundingClientRect();
+                    var targetTop = r.top - s.top + sidebar.scrollTop - 8;
+                    sidebar.scrollTo({ top: targetTop, behavior: 'smooth' });
+                }, 100);
+            } else {
+                setTimeout(function(){
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        }
+        function scrollToCategory(key) {
+            var target = null;
+            if (key) {
+                target = document.getElementById('cat-' + key);
+            }
+            if (!target) {
+                target = document.getElementById('results-start');
+            }
+            scrollToTarget(target);
+        }
+        window.addEventListener('load', function() {
+            var target = document.getElementById('stats-start') || document.getElementById('results-start');
+            scrollToTarget(target);
+        });
+ 
+        (function(){
+            var forms = document.querySelectorAll('form');
+            forms.forEach(function(f){
+                var sb = f.querySelector('button[type="submit"]');
+                if(!sb) return;
+                f.addEventListener('submit', function(){
+                    sb.classList.add('loading');
+                    sb.disabled = true;
+                    sb.dataset.originalText = sb.textContent;
+                    sb.textContent = 'Hesaplanıyor...';
+                });
+            });
+        })();
+    </script>
+    <script src="/static/js/custom.js"></script>
+</body>
+</html>

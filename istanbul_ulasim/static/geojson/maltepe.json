@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Maltepe"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              29.087,
+              40.8907
+            ],
+            [
+              29.178,
+              40.8907
+            ],
+            [
+              29.178,
+              40.960699999999996
+            ],
+            [
+              29.087,
+              40.960699999999996
+            ],
+            [
+              29.087,
+              40.8907
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

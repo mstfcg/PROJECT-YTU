@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sile"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              29.4,
+              41.05
+            ],
+            [
+              29.95,
+              41.0
+            ],
+            [
+              30.0,
+              41.15
+            ],
+            [
+              29.4,
+              41.2
+            ],
+            [
+              29.4,
+              41.05
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

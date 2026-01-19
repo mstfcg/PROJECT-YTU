@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Beykoz"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              29.05,
+              41.08
+            ],
+            [
+              29.25,
+              41.1
+            ],
+            [
+              29.3,
+              41.2
+            ],
+            [
+              29.1,
+              41.22
+            ],
+            [
+              29.05,
+              41.08
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

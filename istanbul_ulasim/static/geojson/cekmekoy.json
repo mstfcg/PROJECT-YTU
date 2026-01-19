@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Cekmekoy"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              29.15,
+              41.02
+            ],
+            [
+              29.35,
+              41.02
+            ],
+            [
+              29.35,
+              41.1
+            ],
+            [
+              29.2,
+              41.12
+            ],
+            [
+              29.15,
+              41.02
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

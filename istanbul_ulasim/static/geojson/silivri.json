@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Silivri"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.9,
+              41.05
+            ],
+            [
+              28.35,
+              41.03
+            ],
+            [
+              28.35,
+              41.25
+            ],
+            [
+              28.0,
+              41.3
+            ],
+            [
+              27.9,
+              41.05
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

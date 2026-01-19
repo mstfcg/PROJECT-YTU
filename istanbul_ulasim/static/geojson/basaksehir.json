@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Basaksehir"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              28.7622,
+              41.0619
+            ],
+            [
+              28.8532,
+              41.0619
+            ],
+            [
+              28.8532,
+              41.131899999999995
+            ],
+            [
+              28.7622,
+              41.131899999999995
+            ],
+            [
+              28.7622,
+              41.0619
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

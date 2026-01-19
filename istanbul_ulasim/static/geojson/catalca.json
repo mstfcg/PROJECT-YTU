@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Catalca"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              28.1,
+              41.05
+            ],
+            [
+              28.55,
+              41.05
+            ],
+            [
+              28.55,
+              41.35
+            ],
+            [
+              28.05,
+              41.4
+            ],
+            [
+              28.1,
+              41.05
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

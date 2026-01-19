@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Zeytinburnu"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              28.8583,
+              40.9547
+            ],
+            [
+              28.9493,
+              40.9547
+            ],
+            [
+              28.9493,
+              41.024699999999996
+            ],
+            [
+              28.8583,
+              41.024699999999996
+            ],
+            [
+              28.8583,
+              40.9547
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

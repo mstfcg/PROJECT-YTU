@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bahcelievler"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              28.8162,
+              40.9632
+            ],
+            [
+              28.9072,
+              40.9632
+            ],
+            [
+              28.9072,
+              41.033199999999994
+            ],
+            [
+              28.8162,
+              41.033199999999994
+            ],
+            [
+              28.8162,
+              40.9632
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

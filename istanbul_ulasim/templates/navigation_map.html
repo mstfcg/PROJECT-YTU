@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="/static/vendor/leaflet/leaflet.js"></script>
+    <script src="/static/vendor/jquery/jquery-3.7.1.min.js"></script>
+    <script src="/static/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="/static/vendor/awesome-markers/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="/static/vendor/leaflet/leaflet.css"/>
+    <link rel="stylesheet" href="/static/vendor/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/static/vendor/bootstrap/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="/static/vendor/fontawesome/all.min.css"/>
+    <link rel="stylesheet" href="/static/vendor/awesome-markers/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="/static/vendor/awesome-markers/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_7ba486aebd1d0ce44b65cc57c2fefe75 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; background-color: #f2efe9; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_7ba486aebd1d0ce44b65cc57c2fefe75" ></div>
+        
+</body>
+<script>
+    
+    
+    (function(){
+      var selMode = 'start';
+      window.addEventListener('message', function(e){
+        var d = e.data || {};
+        if (d.type === 'navSelMode') { selMode = d.value || 'start'; }
+      });
+      var attached = false;
+      var tryAttach = function() {
+        var name = Object.keys(window).find(function(k){ return /^map_/.test(k) && window[k] && typeof window[k].on === 'function'; });
+        var mapObj = window[name];
+        if (mapObj && !attached) {
+          attached = true;
+          mapObj.on('click', function(ev){
+            var lat = ev.latlng.lat, lon = ev.latlng.lng;
+            if (window.parent) {
+              window.parent.postMessage({ type: 'navCoords', target: selMode, lat: lat, lon: lon }, '*');
+            }
+          });
+        }
+      };
+      tryAttach();
+      var iv = setInterval(function(){
+        if (!attached) {
+          tryAttach();
+        } else {
+          clearInterval(iv);
+        }
+      }, 250);
+    })();
+    
+    
+            var map_7ba486aebd1d0ce44b65cc57c2fefe75 = L.map(
+                "map_7ba486aebd1d0ce44b65cc57c2fefe75",
+                {
+                    center: [41.016979, 28.911737700000003],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "maxBounds": [
+[
+40.71395582628603,
+27.7734375,
+],
+[
+41.50857729743934,
+30.234375,
+],
+],
+  "zoom": 12,
+  "zoomControl": true,
+  "preferCanvas": false,
+  "maxBoundsViscosity": 1.0,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_58eef12860bf1245eb0ebfceeec10238 = L.tileLayer(
+                "/static/tiles/{z}/{x}/{y}.png",
+                {
+  "minZoom": 10,
+  "maxZoom": 18,
+  "maxNativeZoom": 16,
+  "noWrap": true,
+  "attribution": "Offline Map (YTU Project)",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_58eef12860bf1245eb0ebfceeec10238.addTo(map_7ba486aebd1d0ce44b65cc57c2fefe75);
+        
+    
+            var marker_43b850f3b261fe06605ca983766eb9a1 = L.marker(
+                [41.016979, 28.911737700000003],
+                {
+}
+            ).addTo(map_7ba486aebd1d0ce44b65cc57c2fefe75);
+        
+    
+            var icon_eaefc29d6bc5b9e5cdda8b020a5e35c5 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "male",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+            marker_43b850f3b261fe06605ca983766eb9a1.bindTooltip(
+                `<div>
+                     Başlangıç - Cevizlibağ
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_43b850f3b261fe06605ca983766eb9a1.setIcon(icon_eaefc29d6bc5b9e5cdda8b020a5e35c5);
+            
+    
+            var marker_cdaeb58e3481cdc803bfa01dc0967106 = L.marker(
+                [41.025615, 28.893680000000003],
+                {
+}
+            ).addTo(map_7ba486aebd1d0ce44b65cc57c2fefe75);
+        
+    
+            var icon_f339383149b171db24d506ffb4cb4140 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "male",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+            marker_cdaeb58e3481cdc803bfa01dc0967106.bindTooltip(
+                `<div>
+                     Bitiş - Yıldız Teknik Üniversitesi Davutpaşa
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_cdaeb58e3481cdc803bfa01dc0967106.setIcon(icon_f339383149b171db24d506ffb4cb4140);
+            
+    
+            var poly_line_3470d0c634b8240b9c2df2d3f5b9ffc0 = L.polyline(
+                [[41.0166839, 28.9118616], [41.0165845, 28.9116939], [41.0162829, 28.911158], [41.0162829, 28.911158], [41.0160927, 28.9109834], [41.015999, 28.9108977], [41.015999, 28.9108977], [41.015969, 28.9109657], [41.015969, 28.9109657], [41.0159984, 28.91099], [41.0160227, 28.9111235], [41.0160823, 28.9111061], [41.0163626, 28.9108123], [41.0163626, 28.9108123], [41.0163731, 28.9108021], [41.0163731, 28.9108021], [41.0163951, 28.9107782], [41.0163951, 28.9107782], [41.0166724, 28.9104863], [41.0166724, 28.9104863], [41.0168251, 28.9103385], [41.0169052, 28.9104924], [41.0169521, 28.910579], [41.0168835, 28.9106594], [41.0168835, 28.9106594], [41.0166823, 28.9103633], [41.0165564, 28.9101695], [41.0163603, 28.9098789], [41.0162198, 28.9096954], [41.0162198, 28.9096954], [41.0161258, 28.9095075], [41.0160681, 28.9093687], [41.0160332, 28.9092477], [41.0160081, 28.9091418], [41.0160081, 28.9091418], [41.0159938, 28.9089894], [41.0159843, 28.908769], [41.0159904, 28.9084996], [41.0159967, 28.9082982], [41.0160083, 28.9082019], [41.0160289, 28.908101], [41.0160622, 28.9079986], [41.0161065, 28.9078933], [41.016165, 28.9077766], [41.016165, 28.9077766], [41.016238, 28.9076506], [41.01628, 28.9075673], [41.0164564, 28.9072125], [41.0164787, 28.9071678], [41.0165104, 28.9070963], [41.0165942, 28.9068616], [41.0166804, 28.9065721], [41.0166804, 28.9065721], [41.0167528, 28.9064362], [41.0167905, 28.9063799], [41.0168497, 28.9063299], [41.0169039, 28.9062891], [41.0169039, 28.9062891], [41.0170372, 28.906215], [41.0171763, 28.9061296], [41.0173047, 28.9060241], [41.0174273, 28.9059129], [41.0176213, 28.9057341], [41.0177914, 28.9055561], [41.0177914, 28.9055561], [41.0180396, 28.9052648], [41.0182911, 28.9049228], [41.0182911, 28.9049228], [41.0183472, 28.9048464], [41.018642, 28.9042665], [41.018952, 28.9037762], [41.0190116, 28.9036966], [41.0190116, 28.9036966], [41.0191001, 28.9036056], [41.0192852, 28.903469], [41.0194916, 28.903313], [41.0194916, 28.903313], [41.0195402, 28.9032635], [41.0196453, 28.9031751], [41.0197161, 28.9030936], [41.0197644, 28.9030311], [41.0197644, 28.9030311], [41.0197832, 28.9029971], [41.0198668, 28.9028522], [41.0199407, 28.9027304], [41.0200027, 28.9026415], [41.0200657, 28.9025706], [41.020192, 28.9024408], [41.0205287, 28.9021415], [41.020617, 28.9020633], [41.020617, 28.9020633], [41.0206587, 28.9020451], [41.0206948, 28.9020367], [41.0207239, 28.9020398], [41.0207239, 28.9020398], [41.0207443, 28.9019674], [41.0207443, 28.9019674], [41.0208165, 28.9019661], [41.0208165, 28.9019661], [41.0208068, 28.9018416], [41.0207824, 28.9015374], [41.0207717, 28.9013269], [41.0207717, 28.9013269], [41.0207585, 28.9009797], [41.0207388, 28.9007154], [41.0207388, 28.9007154], [41.0207585, 28.9005634], [41.0207858, 28.9003635], [41.0208463, 28.9000133], [41.0208463, 28.9000133], [41.0208973, 28.8997655], [41.0208973, 28.8997655], [41.0209129, 28.8996995], [41.0209321, 28.8996186], [41.0209321, 28.8996186], [41.0210123, 28.8992649], [41.0210123, 28.8992649], [41.0210546, 28.8991052], [41.0210546, 28.8991052], [41.0209886, 28.8990773], [41.0209886, 28.8990773], [41.0209049, 28.8990404], [41.0209049, 28.8990404], [41.0209017, 28.8989741], [41.0208958, 28.8989425], [41.0208834, 28.8989171], [41.0208731, 28.898893], [41.0208686, 28.8988592], [41.0209104, 28.8987187], [41.0209152, 28.8986853], [41.0209161, 28.8986542], [41.0209139, 28.8985974], [41.0209095, 28.8985399], [41.0209237, 28.8984061], [41.0209237, 28.8984061], [41.0209897, 28.8982771], [41.0211418, 28.8980193], [41.0212723, 28.8978752], [41.0214001, 28.8977222], [41.0218359, 28.8969464], [41.022121, 28.8964823], [41.0221611, 28.8964169], [41.0221611, 28.8964169], [41.0222436, 28.8964275], [41.0227579, 28.8965621], [41.0227579, 28.8965621], [41.0232627, 28.8967515], [41.0233404, 28.8967651], [41.0234238, 28.8967716], [41.0235116, 28.89676], [41.0235916, 28.8967294], [41.0237269, 28.8966463], [41.0238599, 28.896547], [41.0239803, 28.8964224], [41.0241208, 28.8962225], [41.0243532, 28.8958919], [41.0253406, 28.8942907], [41.0254976, 28.8941884], [41.0254976, 28.8941884], [41.0255204, 28.8941429], [41.0255263, 28.8940953], [41.0255263, 28.8940953], [41.0255434, 28.8940506], [41.025581, 28.8939178], [41.0256062, 28.8938366], [41.0256062, 28.8938366], [41.0255293, 28.8937948]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": "5, 10", "dashOffset": null, "fill": false, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 5}
+            ).addTo(map_7ba486aebd1d0ce44b65cc57c2fefe75);
+        
+    
+            poly_line_3470d0c634b8240b9c2df2d3f5b9ffc0.bindTooltip(
+                `<div>
+                     Navigasyon Rotası
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            map_7ba486aebd1d0ce44b65cc57c2fefe75.fitBounds(
+                [[41.015969, 28.8937948], [41.0256062, 28.9118616]],
+                {}
+            );
+        
+</script>
+</html>

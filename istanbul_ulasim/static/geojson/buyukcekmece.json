@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Buyukcekmece"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              28.45,
+              41.0
+            ],
+            [
+              28.6,
+              40.98
+            ],
+            [
+              28.6,
+              41.1
+            ],
+            [
+              28.4,
+              41.08
+            ],
+            [
+              28.45,
+              41.0
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

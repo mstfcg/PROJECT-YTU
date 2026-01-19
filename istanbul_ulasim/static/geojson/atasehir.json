@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Atasehir"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              29.0716,
+              40.9551
+            ],
+            [
+              29.1626,
+              40.9551
+            ],
+            [
+              29.1626,
+              41.025099999999995
+            ],
+            [
+              29.0716,
+              41.025099999999995
+            ],
+            [
+              29.0716,
+              40.9551
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
